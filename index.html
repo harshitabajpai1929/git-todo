@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+   <style>
+        body {
+	background: #fff;
+	color: #333;
+	font-family: Lato, sans-serif;
+	background-color:#e4e4e4;
+}
+.container {
+	display: block;
+	width: 400px;
+	margin: 10px auto 100px;
+	background-color:#fff;
+	padding:0px 10px 10px 10px;
+	border-radius:10px
+}
+h2 {
+	text-align:center;
+	padding-top:10px;
+	margin-bottom:0px;
+}
+ul {
+	margin: 0;
+	padding: 0;
+}
+li * {
+	float: left;
+}
+li,
+h3 {
+	clear: both;
+	list-style: none;
+}
+input,
+button {
+	outline: none;
+}
+button {
+	background: none;
+	border: 0px;
+	color: #888;
+	font-size: 15px;
+	width: 60px;
+	margin: 10px 0 0;
+	font-family: Lato, sans-serif;
+	cursor: pointer;
+}
+button:hover {
+	color: #333;
+}
+h3,
+label[for='new-task'] {
+	color: #333;
+	font-weight: 700;
+	font-size: 15px;
+	border-bottom: 2px solid #333;
+	padding: 20px 0 10px;
+	margin: 0;
+	text-transform: uppercase;
+}
+input[type="text"] {
+	margin: 0;
+	font-size: 18px;
+	line-height: 18px;
+	height: 18px;
+	padding: 10px;
+	border: 1px solid #ddd;
+	background: #fff;
+	border-radius: 6px;
+	font-family: Lato, sans-serif;
+	color: #888;
+}
+input[type="text"]:focus {
+	color: #333;
+}
+label[for='new-task'] {
+	display: block;
+	margin: 0 0 20px;
+}
+input#new-task {
+	float: left;
+	width: 318px;
+}
+p > button:hover {
+	color: #7fc50f;
+}
+li {
+	overflow: hidden;
+	padding: 20px 0;
+	border-bottom: 1px solid #eee;
+}
+
+li > input[type="checkbox"] {
+	margin: 0 10px;
+	position: relative;
+	top: 15px;
+}
+
+li > label {
+	font-size: 18px;
+	line-height: 40px;
+	width: 237px;
+	padding: 0 0 0 11px;
+}
+
+li > input[type="text"] {
+	width: 226px;
+}
+
+li > .delete:hover {
+	color: #cf23c6;
+}
+#completed-tasks label {
+	text-decoration: line-through;
+	color: #888;
+}
+ul li input[type=text] {
+	display: none;
+}
+
+ul li.editMode input[type=text] {
+	display: block;
+}
+
+ul li.editMode label {
+	display: none;
+}
+
+   </style>
+   <body>
+    <div class="container">
+        <h2>TODO LIST</h2>
+        <h3>Add Item</h3>
+        <p>
+          <input id="new-task" type="text" />
+          <input id="todoindex" type="text" hidden/>
+          <button id="addbtn" onclick="add()">Add</button
+          ><button id="updatebtn" style="display: none" onclick="update()">
+            update
+          </button>
+        </p>
+  
+        <h3>Todo</h3>
+        <ul id="incomplete-tasks">
+          <li>
+            <input type="checkbox" /><label>Make your todo list Now</label
+            ><input type="text" /><button class="edit">Edit</button
+            ><button class="delete">Delete</button>
+          </li>
+        </ul>
+  
+        <h3>Completed</h3>
+        <ul id="completed-tasks">
+          <li>
+            <input type="checkbox" checked /><label>See the Doctor</label
+            ><input type="text" /><button class="edit">Edit</button
+            ><button class="delete">Delete</button>
+          </li>
+        </ul>
+      </div>
+    <script>
+        var todo = [];
+var comptodo = [];
+
+function display(){
+    var list = ""
+    todo.forEach((element,index) => {
+    var item =`<li>
+    <input type="checkbox" onclick="check(${index})" /><label>${element}</label
+    ><input type="text" /><button class="edit" onclick="edit(${index})">Edit</button
+    ><button class="delete" onclick="del(${index})">Delete</button>
+    </li>`;
+    list += item;
+});
+document.getElementById("incomplete-tasks").innerHTML =list;
+};
+
+function add(){
+    var item  = document.getElementById("new-task").value;
+    todo.push(item)
+    console.log(todo)
+    display();
+};
+
+function edit(index){
+    var listitem = todo[index];
+    document.getElementById("todoindex").value=index;
+    var x = document.getElementById("todoindex").classList.add('todo');
+    document.getElementById("new-task").value=listitem;
+    document.getElementById('addbtn').style.display = 'none';
+    document.getElementById("updatebtn").style = display;
+};
+
+function update(){
+    var item = document.getElementById("new-task").value;
+    var index = document.getElementById("todoindex").value;
+    var x = document.getElementById("todoindex").className;
+    console.log(x);
+    if(x == "todo"){
+        todo[index]=item;
+        display();
+        document.getElementById("todoindex").className="";
+    }
+    else{
+        comptodo[index]=item;
+        displaycomp();
+        document.getElementById("todoindex").className="";
+    }
+    
+    
+    document.getElementById('addbtn').style = display;
+    document.getElementById("updatebtn").style.display = 'none';
+}
+
+function del(index){
+    todo.splice(index,1);
+    display();
+};
+
+function check(index){
+    var value = todo[index];
+    comptodo.push(value);
+    todo.splice(index,1);
+    displaycomp();
+    display();
+};
+function displaycomp(){
+    var list = ""
+    comptodo.forEach((element,index) => {
+    var item =`<li>
+    <input type="checkbox" onclick="compcheck(${index})" /><label>${element}</label
+    ><input type="text" /><button class="edit" onclick="compedit(${index})">Edit</button
+    ><button class="delete" onclick="compdel(${index})">Delete</button>
+    </li>`;
+    console.log(index)
+    list += item;
+});
+
+document.getElementById("completed-tasks").innerHTML =list;
+};
+
+function compedit(index){
+    var listitem = comptodo[index];
+    document.getElementById("todoindex").value=index;
+    document.getElementById("new-task").value=listitem;
+    var x = document.getElementById("todoindex").classList.add('comptodo')
+    document.getElementById('addbtn').style.display = 'none';
+    document.getElementById("updatebtn").style = display;
+};
+function compdel(index){
+    comptodo.splice(index,1);
+    displaycomp();
+};
+
+function compcheck(index){
+    var value = comptodo[index];
+    todo.push(value);
+    comptodo.splice(index,1);
+    displaycomp();
+    display();
+};
+
+</script>  
+</body>
+</html>
